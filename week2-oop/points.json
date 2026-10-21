@@ -1,0 +1,7 @@
+[
+  {"id": 1, "longitude": 110.62, "latitude": 20.18, "depth_m": 8.5, "date": "2026/8/1"},
+  {"id": 2, "longitude": 110.75, "latitude": 20.22, "depth_m": 15.2, "date": "2026/8/1"},
+  {"id": 3, "longitude": 110.88, "latitude": 20.30, "depth_m": 23.7, "date": "2026/8/1"},
+  {"id": 4, "longitude": 111.02, "latitude": 20.35, "depth_m": 31.4, "date": "2026/8/1"},
+  {"id": 5, "longitude": 111.15, "latitude": 20.41, "depth_m": 42.8, "date": "2026/8/1"}
+]
