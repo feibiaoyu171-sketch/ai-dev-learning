@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import pymysql
 from config import MYSQL_PASSWORD
-
+from pydantic import BaseModel
 app = FastAPI()
 
 
@@ -53,3 +53,49 @@ def get_stats():
     row = cursor.fetchone()
     conn.close()
     return {"count": row[0], "avg": row[1], "max": row[2], "min": row[3]}
+class Point(BaseModel):
+    lon:float
+    lat:float
+    depth_m:float
+    obs_date:str
+@app.post("/points")
+def create_point(point: Point):
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password=MYSQL_PASSWORD,
+        database="bathymetry"
+    )
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO points (lon,lat,depth_m,obs_date) VALUES (%s,%s,%s,%s)" ,(point.lon,point.lat,point.depth_m,point.obs_date))
+    conn.commit()
+    conn.close()
+    return {"message":"已成功插入"}
+
+@app.put("/points/{point_id}")
+def update_point(point_id:int,point:Point):
+        conn = pymysql.connect(
+            host="localhost",
+            user="root",
+            password=MYSQL_PASSWORD,
+            database="bathymetry"
+        )
+        cursor = conn.cursor()
+        cursor.execute("UPDATE points SET lon = %s,lat = %s,depth_m = %s,obs_date = %s WHERE id = %s",(point.lon,point.lat,point.depth_m,point.obs_date,point_id))
+        conn.commit()
+        conn.close()
+        return {"message":"已成功修改"}
+
+@app.delete("/points/{point_id}")
+def delete_point(point_id: int):
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password=MYSQL_PASSWORD,
+        database="bathymetry"
+    )
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM points WHERE id = %s",(point_id,))
+    conn.commit()
+    conn.close()
+    return {"message":"删除成功"}
