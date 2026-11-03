@@ -60,6 +60,8 @@ class Point(BaseModel):
     obs_date:str
 @app.post("/points")
 def create_point(point: Point):
+    if point.depth_m <0:
+        return {"error": "水深不能为负数"}
     conn = pymysql.connect(
         host="localhost",
         user="root",
@@ -99,3 +101,37 @@ def delete_point(point_id: int):
     conn.commit()
     conn.close()
     return {"message":"删除成功"}
+
+@app.get("/points/filter")
+def filter_points(min_depth:float= 0):
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password=MYSQL_PASSWORD,
+        database="bathymetry"
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM points WHERE depth_m>= %s",(min_depth,))
+    rows = cursor.fetchall()
+    conn.close()
+    results = []
+    for row in rows:
+        results.append({"id":row[0],"lon":row[1],"lat":row[2],"depth_m":row[3],"obs_date":row[4]})
+    return results
+
+@app.get("/points/above/{depth}")
+def get_depth(depth:float=0):
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password=MYSQL_PASSWORD,
+        database="bathymetry"
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM points WHERE depth_m > %s",(depth,))
+    rows = cursor.fetchall()
+    conn.close()
+    results = []
+    for row in rows:
+        results.append({"id":row[0],"lon":row[1],"lat":row[2],"depth_m":row[3],"obs_date":row[4]})
+    return results
