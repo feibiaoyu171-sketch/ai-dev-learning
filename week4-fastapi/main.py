@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import pymysql
-from config import MYSQL_PASSWORD
+from config import MYSQL_PASSWORD, DB_HOST
 from pydantic import BaseModel
 app = FastAPI()
 
@@ -8,7 +8,7 @@ app = FastAPI()
 @app.get("/points")
 def get_points():
     conn = pymysql.connect(
-        host="localhost",
+        host=DB_HOST,
         user="root",
         password=MYSQL_PASSWORD,
         database="bathymetry"
@@ -28,7 +28,7 @@ def get_points():
 @app.get("/deepest")
 def get_deepest():
     conn = pymysql.connect(
-        host="localhost",
+        host=DB_HOST,
         user="root",
         password=MYSQL_PASSWORD,
         database="bathymetry"
@@ -43,7 +43,7 @@ def get_deepest():
 @app.get("/stats")
 def get_stats():
     conn = pymysql.connect(
-        host="localhost",
+        host=DB_HOST,
         user="root",
         password=MYSQL_PASSWORD,
         database="bathymetry"
@@ -63,7 +63,7 @@ def create_point(point: Point):
     if point.depth_m <0:
         return {"error": "水深不能为负数"}
     conn = pymysql.connect(
-        host="localhost",
+        host=DB_HOST,
         user="root",
         password=MYSQL_PASSWORD,
         database="bathymetry"
@@ -77,7 +77,7 @@ def create_point(point: Point):
 @app.put("/points/{point_id}")
 def update_point(point_id:int,point:Point):
         conn = pymysql.connect(
-            host="localhost",
+            host=DB_HOST,
             user="root",
             password=MYSQL_PASSWORD,
             database="bathymetry"
@@ -91,7 +91,7 @@ def update_point(point_id:int,point:Point):
 @app.delete("/points/{point_id}")
 def delete_point(point_id: int):
     conn = pymysql.connect(
-        host="localhost",
+        host=DB_HOST,
         user="root",
         password=MYSQL_PASSWORD,
         database="bathymetry"
@@ -105,7 +105,7 @@ def delete_point(point_id: int):
 @app.get("/points/filter")
 def filter_points(min_depth:float= 0):
     conn = pymysql.connect(
-        host="localhost",
+        host=DB_HOST,
         user="root",
         password=MYSQL_PASSWORD,
         database="bathymetry"
@@ -122,7 +122,7 @@ def filter_points(min_depth:float= 0):
 @app.get("/points/above/{depth}")
 def get_depth(depth:float=0):
     conn = pymysql.connect(
-        host="localhost",
+        host=DB_HOST,
         user="root",
         password=MYSQL_PASSWORD,
         database="bathymetry"
